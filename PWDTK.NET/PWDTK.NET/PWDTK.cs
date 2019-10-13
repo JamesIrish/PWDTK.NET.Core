@@ -22,51 +22,45 @@ namespace PWDTK_DOTNET451
         /// <summary>
         /// The default character length to create salt strings
         /// </summary>
-        public const Int32 CDefaultSaltLength = 64;
+        public const int CDefaultSaltLength = 64;
 
         /// <summary>
         /// The default iteration count for key stretching
         /// </summary>
-        public const Int32 CDefaultIterationCount = 5000;
+        public const int CDefaultIterationCount = 5000;
 
         /// <summary>
         /// The minimum size in characters the password hashing function will allow for a salt string, salt must be always greater than 8 for PBKDF2 key derivitation to function
         /// </summary>
-        public const Int32 CMinSaltLength = 8;
+        public const int CMinSaltLength = 8;
 
         /// <summary>
         /// The maximum size a password can be to avoid massive passwords that force the initial hash to take so long it creates a DOS effect. Be careful increasing this, also make sure you catch exception for password too long!
         /// </summary>
-        public const Int32 CMaxPasswordLength = 1024;
+        public const int CMaxPasswordLength = 1024;
 
         /// <summary>
         /// The key length used in the PBKDF2 derive bytes and matches the output of the underlying HMACSHA512 psuedo random function
         /// </summary>
-        public const Int32 CKeyLength = 64;
+        public const int CKeyLength = 64;
 
         /// <summary>
         /// A default password policy provided for use if you are unsure what to make your own PasswordPolicy
         /// </summary>
-        public static PasswordPolicy CDefaultPasswordPolicy = new PasswordPolicy(1, 1, 2, 6, Int32.MaxValue);
+        public static PasswordPolicy CDefaultPasswordPolicy = new PasswordPolicy(1, 1, 2, 6, int.MaxValue);
 
         /// <summary>
         /// Below are regular expressions used for password to policy comparrisons
         /// </summary>
-        private const String CNumbersRegex ="[\\d]";
-        private const String CUppercaseRegex = "[A-Z]";
-        private const String CNonAlphaNumericRegex = "[^0-9a-zA-Z]";
+        private const string CNumbersRegex ="[\\d]";
+        private const string CUppercaseRegex = "[A-Z]";
+        private const string CNonAlphaNumericRegex = "[^0-9a-zA-Z]";
 
         /// <summary>
         /// A PasswordPolicy defines min and max password length and also minimum amount of Uppercase, Non-Alpanum and Numerics to be present in the password string
         /// </summary>
         public struct PasswordPolicy
         {
-            private readonly int _aForceXUpperCase;            
-            private readonly int _aForceXNonAlphaNumeric;
-            private readonly int _aForceXNumeric;
-            private readonly int _aPasswordMinLength;
-            private readonly int _aPasswordMaxLength;
-
             /// <summary>
             /// Creates a new PasswordPolicy Struct
             /// </summary>
@@ -77,52 +71,22 @@ namespace PWDTK_DOTNET451
             /// <param name="maxLength">Forces at most this number of characters</param>
             public PasswordPolicy(int xUpper, int xNonAlphaNumeric, int xNumeric, int minLength, int maxLength)
             {
-                _aForceXUpperCase = xUpper;
-                _aForceXNonAlphaNumeric = xNonAlphaNumeric;
-                _aForceXNumeric = xNumeric;
-                _aPasswordMinLength = minLength;
-                _aPasswordMaxLength = maxLength;
+                ForceXUpperCase = xUpper;
+                ForceXNonAlphaNumeric = xNonAlphaNumeric;
+                ForceXNumeric = xNumeric;
+                PasswordMinLength = minLength;
+                PasswordMaxLength = maxLength;
             }
 
-            public int ForceXUpperCase
-            {
-                get
-                {
-                    return _aForceXUpperCase;
-                }
-            }
+            public int ForceXUpperCase { get; }
 
-            public int ForceXNonAlphaNumeric
-            {
-                get
-                {
-                    return _aForceXNonAlphaNumeric;
-                }
-            }
+            public int ForceXNonAlphaNumeric { get; }
 
-            public int ForceXNumeric
-            {
-                get
-                {
-                    return _aForceXNumeric;
-                }
-            }
+            public int ForceXNumeric { get; }
 
-            public int PasswordMinLength
-            {
-                get
-                {
-                    return _aPasswordMinLength;
-                }
-            }
+            public int PasswordMinLength { get; }
 
-            public int PasswordMaxLength
-            {
-                get
-                {
-                    return _aPasswordMaxLength;
-                }
-            }
+            public int PasswordMaxLength { get; }
         }
 
         #endregion
@@ -134,18 +98,18 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="toConvert">This is the String to convert into a SecureString, please note that String ToConvert will be Overwritten with the same length of *'s to try remove it from RAM so after conversion it can be used no more and the SecureString must be used instead</param>
         /// <returns>A SecureString which resides in memory in an encrypted state</returns>
-        public static SecureString StringToSecureString(ref String toConvert)
+        public static SecureString StringToSecureString(ref string toConvert)
         {
-            SecureString outputSecureString = new SecureString();
-            String overwriteString = String.Empty;
+            var outputSecureString = new SecureString();
+            var overwriteString = string.Empty;
 
-            foreach (Char c in toConvert)
+            foreach (var c in toConvert)
             {
                 outputSecureString.AppendChar(c);
             }
 
             //Overwrite original String to try clear it from RAM (Note may still reside in Paged and Hiberfil)
-            for (int i = 0; i < toConvert.Length; i++)
+            for (var i = 0; i < toConvert.Length; i++)
             {
                 overwriteString += "*";
             }
@@ -160,7 +124,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="saltLength">Length of salt Byte Array to be generated. Defaults to 64</param>
         /// <returns>A Byte Array to be used as Salt</returns>
-        public static Byte[] GetRandomSalt(Int32 saltLength = CDefaultSaltLength)
+        public static byte[] GetRandomSalt(int saltLength = CDefaultSaltLength)
         {
             return PGenerateRandomSalt(saltLength);
         }
@@ -170,7 +134,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="saltLength">Length of salt HEX string to be generated. Defaults to 64</param>
         /// <returns></returns>
-        public static string GetRandomSaltHexString(Int32 saltLength = CDefaultSaltLength)
+        public static string GetRandomSaltHexString(int saltLength = CDefaultSaltLength)
         {
             return HashBytesToHexString(GetRandomSalt(saltLength));
         }
@@ -183,7 +147,7 @@ namespace PWDTK_DOTNET451
         /// <param name="hash">The existing hash byte array you have stored for comparison</param>
         /// <param name="iterationCount">The number of times you have specified to hash the password for key stretching. Default is 5000 iterations</param>
         /// <returns>True if Password matches Hash else returns  false</returns>
-        public static Boolean ComparePasswordToHash(Byte[] salt, String password, Byte[] hash, Int32 iterationCount = CDefaultIterationCount)
+        public static bool ComparePasswordToHash(byte[] salt, string password, byte[] hash, int iterationCount = CDefaultIterationCount)
         {
             return PPasswordToHash(salt, StringToUtf8Bytes(password), iterationCount).SequenceEqual(hash);
         }
@@ -195,11 +159,11 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The password used to compute the hash</param>
         /// <param name="iterationCount">Repeat the PBKDF2 dunction this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
         /// <returns>The Hash value of the salt + password as a Byte Array</returns>
-        public static Byte[] PasswordToHash(Byte[] salt, String password, Int32 iterationCount = CDefaultIterationCount)
+        public static byte[] PasswordToHash(byte[] salt, string password, int iterationCount = CDefaultIterationCount)
         {
             PCheckSaltCompliance(salt);
 
-            Byte[] convertedPassword = StringToUtf8Bytes(password);
+            var convertedPassword = StringToUtf8Bytes(password);
 
             PCheckPasswordSizeCompliance(convertedPassword);
 
@@ -213,11 +177,11 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The password used to compute the hash</param>
         /// <param name="iterationCount">Repeat the PBKDF2 dunction this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
         /// <returns>The Hash value of the salt + password as a HEX String</returns>
-        public static String PasswordToHashHexString(Byte[] salt, String password, Int32 iterationCount = CDefaultIterationCount)
+        public static string PasswordToHashHexString(byte[] salt, string password, int iterationCount = CDefaultIterationCount)
         {
             PCheckSaltCompliance(salt);
 
-            Byte[] convertedPassword = StringToUtf8Bytes(password);
+            var convertedPassword = StringToUtf8Bytes(password);
 
             PCheckPasswordSizeCompliance(convertedPassword);
 
@@ -229,7 +193,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="hash">The Hash value to convert</param>
         /// <returns>A HEX String representation of the Hash value</returns>
-        public static String HashBytesToHexString(Byte[] hash)
+        public static string HashBytesToHexString(byte[] hash)
         {
             return new SoapHexBinary(hash).ToString();
         }
@@ -239,7 +203,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="hashHexString">The Hash Hex String to convert back to bytes</param>
         /// <returns>Esentially reverses the HashToHexString function, turns the String back into Bytes</returns>
-        public static Byte[] HashHexStringToBytes(String hashHexString)
+        public static byte[] HashHexStringToBytes(string hashHexString)
         {
            return SoapHexBinary.Parse(hashHexString).Value;
         }
@@ -250,7 +214,7 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The password to test for compliance</param>
         /// <param name="pwdPolicy">The PasswordPolicy that we are testing that the Password complies with</param>
         /// <returns>True for Password Compliance with the Policy</returns>
-        public static Boolean TryPasswordPolicyCompliance(String password, PasswordPolicy pwdPolicy)
+        public static bool TryPasswordPolicyCompliance(string password, PasswordPolicy pwdPolicy)
         {
             try
             {
@@ -272,7 +236,7 @@ namespace PWDTK_DOTNET451
         /// <param name="pwdPolicy">The PasswordPolicy that we are testing that the Password complies with</param>
         /// <param name="pwdPolicyException">The exception that will contain why the Password does not meet the PasswordPolicy</param>
         /// <returns>True for Password Compliance with the Policy</returns>
-        public static Boolean TryPasswordPolicyCompliance(String password, PasswordPolicy pwdPolicy, ref PasswordPolicyException pwdPolicyException)
+        public static bool TryPasswordPolicyCompliance(string password, PasswordPolicy pwdPolicy, ref PasswordPolicyException pwdPolicyException)
         {
             try
             {
@@ -292,7 +256,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="stringToConvert">String to convert to Byte Array</param>
         /// <returns>A UTF8 decoded string as Byte Array</returns>
-        public static Byte[] StringToUtf8Bytes(String stringToConvert)
+        public static byte[] StringToUtf8Bytes(string stringToConvert)
         {
             return new UTF8Encoding(false).GetBytes(stringToConvert);
         }
@@ -302,7 +266,7 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="bytesToConvert">Byte Array to convert to String</param>
         /// <returns>A UTF8 encoded Byte Array as String</returns>
-        public static String Utf8BytesToString(Byte[] bytesToConvert)
+        public static string Utf8BytesToString(byte[] bytesToConvert)
         {
             return new UTF8Encoding(false).GetString(bytesToConvert);
         }
@@ -311,7 +275,7 @@ namespace PWDTK_DOTNET451
 
         #region PWDTK Private Methods
 
-        private static void PCheckPasswordPolicyCompliance(String password, PasswordPolicy pwdPolicy)
+        private static void PCheckPasswordPolicyCompliance(string password, PasswordPolicy pwdPolicy)
         {            
             if (new Regex(CNumbersRegex).Matches(password).Count<pwdPolicy.ForceXNumeric)
             {
@@ -339,14 +303,14 @@ namespace PWDTK_DOTNET451
             }
         }
 
-        private static Byte[] PGenerateRandomSalt(Int32 saltLength)
+        private static byte[] PGenerateRandomSalt(int saltLength)
         {
-            Byte[] salt = new byte[saltLength];
+            var salt = new byte[saltLength];
             RandomNumberGenerator.Create().GetBytes(salt);
             return salt;
         }
 
-        private static void PCheckSaltCompliance(Byte[] salt)
+        private static void PCheckSaltCompliance(byte[] salt)
         {
             if (salt.Length < CMinSaltLength)
             {
@@ -354,7 +318,7 @@ namespace PWDTK_DOTNET451
             }
         }
 
-        private static void PCheckPasswordSizeCompliance(Byte[] password)
+        private static void PCheckPasswordSizeCompliance(byte[] password)
         {
             if (password.Length > CMaxPasswordLength)
             {
@@ -362,7 +326,7 @@ namespace PWDTK_DOTNET451
             }
         }
         
-        private static byte[] PPasswordToHash(Byte[] salt, Byte[] password, Int32 iterationCount)
+        private static byte[] PPasswordToHash(byte[] salt, byte[] password, int iterationCount)
         {
             return new Rfc2898(password, salt, iterationCount).GetDerivedKeyBytes_PBKDF2_HMACSHA512(CKeyLength);                 
         }
@@ -374,7 +338,7 @@ namespace PWDTK_DOTNET451
 
     public class SaltTooShortException : Exception
     {
-        public SaltTooShortException(String message):base(message)
+        public SaltTooShortException(string message):base(message)
         {
 
         }
@@ -382,7 +346,7 @@ namespace PWDTK_DOTNET451
 
     public class PasswordPolicyException : Exception
     {
-        public PasswordPolicyException(String message):base(message)
+        public PasswordPolicyException(string message):base(message)
         {
       
         }
@@ -390,7 +354,7 @@ namespace PWDTK_DOTNET451
 
     public class PasswordTooLongException : Exception
     {
-        public PasswordTooLongException(String message)
+        public PasswordTooLongException(string message)
             : base(message)
         {
 
