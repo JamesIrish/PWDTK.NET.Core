@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PWDTK.NET", "PWDTK.NET\PWDTK.NET.csproj", "{1F3A5D51-98E2-4504-BD71-7EAD87BAC245}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PWDTK.NET_SAMPLE_GUI", "PWDTK.NET_SAMPLE_GUI\PWDTK.NET_SAMPLE_GUI.csproj", "{D109D469-AC3B-4890-A203-B03D2EF693E6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B8386FF1-0065-44E2-9CE0-DD17D3BA7BDE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49508626-1542-4A29-A4AE-063B17AC2712}"
 	ProjectSection(SolutionItems) = preProject
-		Readme.txt = Readme.txt
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Global
@@ -29,5 +29,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D715365-7DC3-4A17-B121-ABBDD994912D}
 	EndGlobalSection
 EndGlobal
