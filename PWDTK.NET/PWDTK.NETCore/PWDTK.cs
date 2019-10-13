@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -149,7 +149,9 @@ namespace PWDTK.NETCore
         /// <returns>True if Password matches Hash else returns  false</returns>
         public static bool ComparePasswordToHash(byte[] salt, string password, byte[] hash, int iterationCount = CDefaultIterationCount)
         {
-            return PPasswordToHash(salt, StringToUtf8Bytes(password), iterationCount).SequenceEqual(hash);
+            return ByteArraysEqual(
+                PPasswordToHash(salt, StringToUtf8Bytes(password), iterationCount),
+                hash);
         }
 
         /// <summary>
@@ -336,6 +338,28 @@ namespace PWDTK.NETCore
         private static byte[] PPasswordToHash(byte[] salt, byte[] password, int iterationCount)
         {
             return new Rfc2898(password, salt, iterationCount).GetDerivedKeyBytes_PBKDF2_HMACSHA512(CKeyLength);                 
+        }
+
+        // Compares two byte arrays for equality. The method is specifically written so that the loop is not optimized.
+        [MethodImpl(MethodImplOptions.NoOptimization)]
+        private static bool ByteArraysEqual(byte[] a, byte[] b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false;
+            }
+
+            var areSame = true;
+            for (var i = 0; i < a.Length; i++)
+            {
+                areSame &= (a[i] == b[i]);
+            }
+            return areSame;
         }
 
         #endregion

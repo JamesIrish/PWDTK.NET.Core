@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -106,8 +105,10 @@ namespace PWDTK.NETCore
             }
 
             //returning DK note r not used as dkLen bytes of the final concatenated block returned rather than <0...r-1> substring of final intermediate block + prior blocks as per spec
-            return finalBlock.Take(dkLen).ToArray();
-            
+            var truncBlock = new byte[dkLen];
+            Buffer.BlockCopy(finalBlock, 0, truncBlock, 0, dkLen);
+            return truncBlock;
+
         }
 
         /// <summary>
