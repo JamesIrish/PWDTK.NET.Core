@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>3.0.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/JamesIrish/PWDTK.NET.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JamesIrish/PWDTK.NET.Core</RepositoryUrl>
+    <PackageTags>PBKDF2 PWDTK RFC2898 HMACSHA512</PackageTags>
+    <PackageReleaseNotes>Converted to netstandard2 library</PackageReleaseNotes>
+    <Description>HMAC SHA 512 implementation of PBKDF2 / RFC2898</Description>
+    <Authors>irishcyclist, thashiznets</Authors>
+    <Company />
   </PropertyGroup>
 
 </Project>
