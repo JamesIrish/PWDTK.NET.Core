@@ -11,7 +11,7 @@ namespace PWDTK_DOTNET451
     /// <summary>
     /// Password Toolkit created by Thashiznets
     /// This library facilitates crypto random salt generating and password hashing using HMACSHA512 based PBKDF2
-    /// Also it provides hash comparisson and password policy enforcement by regex (optional)
+    /// Also it provides hash comparison and password policy enforcement by regex (optional)
     /// Created by thashiznets@yahoo.com.au
     /// v2.0.0.2
     /// </summary>
@@ -155,9 +155,9 @@ namespace PWDTK_DOTNET451
         /// <summary>
         ///  Converts Salt + Password into a Hash
         /// </summary>
-        /// <param name="salt">The salt to add infront of the password before processing the hash (Anti-Rainbow Table tactic)</param>
+        /// <param name="salt">The salt to add in front of the password before processing the hash (Anti-Rainbow Table tactic)</param>
         /// <param name="password">The password used to compute the hash</param>
-        /// <param name="iterationCount">Repeat the PBKDF2 dunction this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
+        /// <param name="iterationCount">Repeat the PBKDF2 function this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
         /// <returns>The Hash value of the salt + password as a Byte Array</returns>
         public static byte[] PasswordToHash(byte[] salt, string password, int iterationCount = CDefaultIterationCount)
         {
@@ -173,9 +173,9 @@ namespace PWDTK_DOTNET451
         /// <summary>
         ///  Converts Salt + Password into a Hash represented as a HEX String
         /// </summary>
-        /// <param name="salt">The salt to add infront of the password before processing the hash (Anti-Rainbow Table tactic)</param>
+        /// <param name="salt">The salt to add in front of the password before processing the hash (Anti-Rainbow Table tactic)</param>
         /// <param name="password">The password used to compute the hash</param>
-        /// <param name="iterationCount">Repeat the PBKDF2 dunction this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
+        /// <param name="iterationCount">Repeat the PBKDF2 function this many times (Anti-Rainbow Table tactic), higher value = more CPU usage which is better defence against cracking. Default is 5000 iterations</param>
         /// <returns>The Hash value of the salt + password as a HEX String</returns>
         public static string PasswordToHashHexString(byte[] salt, string password, int iterationCount = CDefaultIterationCount)
         {
@@ -202,7 +202,7 @@ namespace PWDTK_DOTNET451
         /// Converts the Hash Hex String into a Byte[] for computational processing
         /// </summary>
         /// <param name="hashHexString">The Hash Hex String to convert back to bytes</param>
-        /// <returns>Esentially reverses the HashToHexString function, turns the String back into Bytes</returns>
+        /// <returns>Essentially reverses the HashToHexString function, turns the String back into Bytes</returns>
         public static byte[] HashHexStringToBytes(string hashHexString)
         {
            return SoapHexBinary.Parse(hashHexString).Value;
