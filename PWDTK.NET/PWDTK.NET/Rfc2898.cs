@@ -16,17 +16,17 @@ namespace PWDTK_DOTNET451
 
         //I made the variable names match the definition in RFC2898 - PBKDF2 where possible, so you can trace the code functionality back to the specification
         private readonly HMACSHA512 _hmacsha512Obj;
-        private readonly Int32 hLen;
-        private readonly Byte[] P;
-        private readonly Byte[] S;
-        private readonly Int32 c;
-        private Int32 dkLen;
+        private readonly int hLen;
+        private readonly byte[] P;
+        private readonly byte[] S;
+        private readonly int c;
+        private int dkLen;
 
         #endregion
 
         #region Rfc2898 Constants
 
-        //Minimum rcommended itereations in Rfc2898
+        //Minimum recommended iterations in Rfc2898
         public const int CMinIterations = 1000;
         //Minimum recommended salt length in Rfc2898
         public const int CMinSaltLength = 8;
@@ -41,7 +41,7 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The Password to be hashed and is also the HMAC key</param>
         /// <param name="salt">Salt to be concatenated with the password</param>
         /// <param name="iterations">Number of iterations to perform HMACSHA Hashing for PBKDF2</param>
-        public Rfc2898(Byte[] password, Byte[] salt, Int32 iterations)
+        public Rfc2898(byte[] password, byte[] salt, int iterations)
         {
             if(iterations<CMinIterations)
             {
@@ -66,7 +66,7 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The Password to be hashed and is also the HMAC key</param>
         /// <param name="salt">Salt to be concatenated with the password</param>
         /// <param name="iterations">Number of iterations to perform HMACSHA Hashing for PBKDF2</param>
-        public Rfc2898(String password, Byte[] salt, Int32 iterations):this(new UTF8Encoding(false).GetBytes(password),salt,iterations)
+        public Rfc2898(string password, byte[] salt, int iterations):this(new UTF8Encoding(false).GetBytes(password),salt,iterations)
         {
 
         }
@@ -77,7 +77,7 @@ namespace PWDTK_DOTNET451
         /// <param name="password">The Password to be hashed and is also the HMAC key</param>
         /// <param name="salt">Salt to be concatenated with the password</param>
         /// <param name="iterations">Number of iterations to perform HMACSHA Hashing for PBKDF2</param>
-        public Rfc2898(String password, String salt, Int32 iterations):this(new UTF8Encoding(false).GetBytes(password), new UTF8Encoding(false).GetBytes(salt), iterations)
+        public Rfc2898(string password, string salt, int iterations):this(new UTF8Encoding(false).GetBytes(password), new UTF8Encoding(false).GetBytes(salt), iterations)
         {
             
         }
@@ -90,16 +90,16 @@ namespace PWDTK_DOTNET451
         /// </summary>
         /// <param name="keyLength">Length in Bytes of Derived Key</param>
         /// <returns>Derived Key</returns>
-        public Byte[] GetDerivedKeyBytes_PBKDF2_HMACSHA512(Int32 keyLength)
+        public byte[] GetDerivedKeyBytes_PBKDF2_HMACSHA512(int keyLength)
         {
             //no need to throw exception for dkLen too long as per spec because dkLen cannot be larger than Int32.MaxValue so not worth the overhead to check
             dkLen = keyLength;
 
-            Double l = Math.Ceiling((Double)dkLen/hLen);
+            var l = Math.Ceiling((double)dkLen/hLen);
 
-            Byte[] finalBlock = new Byte[0];
+            var finalBlock = new byte[0];
 
-            for (Int32 i = 1; i <= l; i++)
+            for (var i = 1; i <= l; i++)
             {
                 //Concatenate each block from F into the final block (T_1..T_l)
                 finalBlock = pMergeByteArrays(finalBlock, F(P, S, c, i));
@@ -118,9 +118,9 @@ namespace PWDTK_DOTNET451
         /// <param name="c">Iterations to perform the underlying PRF over</param>
         /// <param name="dkLen">Length of Bytes to return, an AES 256 key wold require 32 Bytes</param>
         /// <returns>Derived Key in Byte Array form ready for use by chosen encryption function</returns>
-        public static Byte[] PBKDF2 (Byte[] P, Byte[] S, Int32 c, Int32 dkLen)
+        public static byte[] PBKDF2 (byte[] P, byte[] S, int c, int dkLen)
         {
-            Rfc2898 rfcObj = new Rfc2898(P, S, c);
+            var rfcObj = new Rfc2898(P, S, c);
             return rfcObj.GetDerivedKeyBytes_PBKDF2_HMACSHA512(dkLen);
         }
 
@@ -128,24 +128,24 @@ namespace PWDTK_DOTNET451
 
         #region Rfc2898 Private Members
         //Main Function F as defined in Rfc2898 PBKDF2 spec
-        private  Byte[] F(Byte[] P, Byte[] S, Int32 c, Int32 i)
+        private  byte[] F(byte[] P, byte[] S, int c, int i)
         {
            
             //Salt and Block number Int(i) concatenated as per spec
-            Byte[] Si = pMergeByteArrays(S, INT(i));
+            var Si = pMergeByteArrays(S, INT(i));
 
             //Initial hash (U_1) using password and salt concatenated with Int(i) as per spec
-            Byte[] temp = PRF(P, Si);
+            var temp = PRF(P, Si);
 
             //Output block filled with initial hash value or U_1 as per spec
-            Byte[] U_c = temp;
+            var U_c = temp;
 
-            for (Int32 C = 1; C < c; C++)
+            for (var C = 1; C < c; C++)
             {
                 //rehashing the password using the previous hash value as salt as per spec
                 temp = PRF(P,temp);
 
-                for (Int32 j = 0; j < temp.Length; j++)
+                for (var j = 0; j < temp.Length; j++)
                 {
                     //xor each byte of the each hash block with each byte of the output block as per spec
                     U_c[j] ^= temp[j];
@@ -157,16 +157,16 @@ namespace PWDTK_DOTNET451
         }
 
         //PRF function as defined in Rfc2898 PBKDF2 spec
-        private Byte[] PRF(Byte[] P, Byte[] S)
+        private byte[] PRF(byte[] P, byte[] S)
         {
             //HMACSHA512 Hashing, better than the HMACSHA1 in Microsofts implementation ;)
             return _hmacsha512Obj.ComputeHash(pMergeByteArrays(P,S));
         }
 
         //This method returns the 4 octet encoded Int32 with most significant bit first as per spec
-        private Byte[] INT(Int32 i)
+        private byte[] INT(int i)
         {
-            Byte[] I = BitConverter.GetBytes(i);
+            var I = BitConverter.GetBytes(i);
             
             //Make sure most significant bit is first
             if (BitConverter.IsLittleEndian)
@@ -178,10 +178,10 @@ namespace PWDTK_DOTNET451
         } 
 
         //Merge two arrays into a new array
-        private Byte[] pMergeByteArrays(Byte[] source1, Byte[] source2)
+        private byte[] pMergeByteArrays(byte[] source1, byte[] source2)
         {
             //Most efficient way to merge two arrays this according to http://stackoverflow.com/questions/415291/best-way-to-combine-two-or-more-byte-arrays-in-c-sharp
-            Byte[] buffer = new Byte[source1.Length + source2.Length];
+            var buffer = new byte[source1.Length + source2.Length];
             System.Buffer.BlockCopy(source1, 0, buffer, 0, source1.Length);
             System.Buffer.BlockCopy(source2, 0, buffer, source1.Length, source2.Length);
 
