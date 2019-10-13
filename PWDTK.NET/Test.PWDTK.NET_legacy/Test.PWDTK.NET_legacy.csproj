@@ -51,9 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PWDTK.NET\PWDTK.NET.csproj">
+    <ProjectReference Include="..\PWDTK.NET_legacy\PWDTK.NET_legacy.csproj">
       <Project>{1f3a5d51-98e2-4504-bd71-7ead87bac245}</Project>
-      <Name>PWDTK.NET</Name>
+      <Name>PWDTK.NET_legacy</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
