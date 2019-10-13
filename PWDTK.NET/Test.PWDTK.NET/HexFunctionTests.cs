@@ -35,6 +35,11 @@ namespace Test.PWDTK.NET
             Assert.AreEqual(legacy, update);
         }
 
+        /// <summary>
+        /// Converts the Byte array Hash into a Human Friendly HEX String
+        /// </summary>
+        /// <param name="hash">The Hash value to convert</param>
+        /// <returns>A HEX String representation of the Hash value</returns>
         public static string HashBytesToHexString(byte[] hash)
         {
             var hex = new StringBuilder(hash.Length * 2);
