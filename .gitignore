@@ -1,1 +1,4 @@
-PWDTK.NET/.vs/
+.vs
+packages
+bin
+obj
